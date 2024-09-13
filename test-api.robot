@@ -1,22 +1,19 @@
 *** Settings ***
-Library    RequestsLibrary
+Library           RequestsLibrary
 
-*** Variables ***
-${BASE_URL}    http://127.0.0.1:8080
+Suite Setup       Create Session  testapi  http://localhost:3000
 
 *** Test Cases ***
-Add Two Numbers
-    [Tags]    API
-    ${response}=    GET    ${BASE_URL}/plus/5/6
-    Status Should Be    200
-    ${json}=    Set Variable    ${response.json()}
-    ${result}=    Get From Dictionary    ${json}    sum
-    Should Be Equal As Numbers    ${result}    11
 
-Invalid Parameters Should Return Error
-    [Tags]    API
-    ${response}=    GET    ${BASE_URL}/plus/foo/bar
-    Status Should Be    400
-    ${json}=    Set Variable    ${response.json()}
-    ${error}=    Get From Dictionary    ${json}    error
-    Should Be Equal    ${error}    parameters are not numbers
+Test Plus Endpoint
+    ${response}=    GET On Session  testapi  /plus/5/10
+    Should Be Equal As Strings    ${response.status_code}    200
+    ${json_response}=    Set Variable    ${response.json()}
+    Should Be Equal As Numbers    ${json_response['num1']}    5
+    Should Be Equal As Numbers    ${json_response['num2']}    10
+    Should Be Equal As Numbers    ${json_response['sum']}    15
+
+Add Two Numbers With Invalid Parameters Should Return Error
+    ${response}=    GET On Session  testapi  /plus/text/text  expected_status=400
+    Should Be Equal As Strings    ${response.status_code}    400
+    Should Be Equal As Strings    ${response.json()['error']}    parameters are not numbers
