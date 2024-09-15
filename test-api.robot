@@ -1,7 +1,7 @@
 *** Settings ***
 Library           RequestsLibrary
 
-Suite Setup       Create Session  testapi  http://localhost:3000
+Suite Setup       Create Session  testapi  http://localhost:8080
 
 *** Test Cases ***
 
