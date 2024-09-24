@@ -16,4 +16,5 @@ Test Plus Endpoint
 Add Two Numbers With Invalid Parameters Should Return Error
     ${response}=    GET On Session  testapi  /plus/text/text  expected_status=400
     Should Be Equal As Strings    ${response.status_code}    400
-    Should Be Equal As Strings    ${response.json()['error']}    parameters are not numbers
+    ${json_response}=    Set Variable    ${response.json()}
+    Should Be Equal As Strings    ${json_response['error']}    parameters are not numbers
